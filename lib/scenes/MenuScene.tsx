@@ -146,7 +146,7 @@ export default class MenuScene extends Phaser.Scene {
       "data:image/svg+xml;base64," +
         btoa(`
       <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="45" fill="#6366f1" stroke="#ffffff" stroke-width="4"/>
+        <circle cx="50" cy="50" r="45" fill="#6366f1" stroke="#ffffff" strokeWidth="4"/>
       </svg>
     `),
     )
@@ -157,8 +157,8 @@ export default class MenuScene extends Phaser.Scene {
       "data:image/svg+xml;base64," +
         btoa(`
       <svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="60" cy="60" r="55" fill="#f59e0b" stroke="#ffffff" stroke-width="6"/>
-        <circle cx="60" cy="60" r="35" fill="none" stroke="#ffffff" stroke-width="3"/>
+        <circle cx="60" cy="60" r="55" fill="#f59e0b" stroke="#ffffff" strokeWidth="6"/>
+        <circle cx="60" cy="60" r="35" fill="none" stroke="#ffffff" strokeWidth="3"/>
       </svg>
     `),
     )
@@ -175,15 +175,17 @@ export default class MenuScene extends Phaser.Scene {
     }
 
     // Show high score
-    try {
-      const highScore = localStorage.getItem("osu-high-score")
-      const highAccuracy = localStorage.getItem("osu-high-accuracy")
-      if (highScore) {
-        const accuracy = highAccuracy ? Number.parseFloat(highAccuracy).toFixed(1) : "0.0"
-        this.highScoreText.setText(`High Score: ${Number.parseInt(highScore).toLocaleString()} (${accuracy}%)`)
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      try {
+        const highScore = localStorage.getItem("osu-high-score")
+        const highAccuracy = localStorage.getItem("osu-high-accuracy")
+        if (highScore) {
+          const accuracy = highAccuracy ? Number.parseFloat(highAccuracy).toFixed(1) : "0.0"
+          this.highScoreText.setText(`High Score: ${Number.parseInt(highScore).toLocaleString()} (${accuracy}%)`)
+        }
+      } catch (error) {
+        console.warn("Could not load high score:", error)
       }
-    } catch (error) {
-      console.warn("Could not load high score:", error)
     }
   }
 
@@ -192,6 +194,8 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   private importBeatmap() {
+    if (typeof document === "undefined") return
+
     // Create file input element
     const input = document.createElement("input")
     input.type = "file"
